@@ -20,14 +20,17 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Rotas
 
-app.get('/', function(req, res) {
-res.render('home')});
+app.get('/', async function (req, res) {
+    const notes = await db.getDb().db().collection('notes').find({}).toArray();
+    res.render('home', { notes });
+});
 
 app.use('/notes', notesRoutes)
 
 db.initDb((err, db) => {
-    if(err) {
+    if (err) {
         console.log(err);
     } else {
         console.log(`${server} O banco conectou com sucesso`)
